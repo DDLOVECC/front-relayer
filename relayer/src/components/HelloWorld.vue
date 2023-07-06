@@ -19,6 +19,18 @@
             Id：<input v-model="id"> <br/>
             <button @click="getVoteResult">getVoteResult</button>
         </div>
+
+        <div class="approval">
+            <p>挂单</p><br>
+            operator：<input v-model="operator"> <br/>
+            <button @click="approval">挂单</button>
+        </div>
+
+        <div class="getApproval">
+            <p>获取挂单结果</p><br>
+            operator：<input v-model="operator"> <br/>
+            <button @click="getApproval">获取挂单结果</button>
+        </div>
     </div>
 </template>
 <script>
@@ -33,7 +45,8 @@
                 tokenData: "",
                 signer: "",
                 voteId: "",
-                id: ""
+                id: "",
+                operator: ""
             }
         },
         methods: {
@@ -84,7 +97,38 @@
                 axios.post('/api/relayer/getVoteResult', data).then(res => {
                     console.log(res);
                 });
-            }
+            },
+            async approval() {
+                const mnemonic = "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol";
+                const wallet = ethers.Wallet.fromMnemonic(mnemonic, `m/44'/60'/0'/0/0`);
+                let address = wallet.address;
+                console.log("address:" + address)
+                let message = address + this.operator;
+
+                let signMessage = await wallet.signMessage(message);
+                console.log("signMessage:" + signMessage)
+                let data = {
+                    "owner": address,
+                    "operator": this.operator,
+                    "message": message,
+                    "signMessage": signMessage
+                };
+                axios.post('/api/relayer/approval', data).then(res => {
+                    console.log(res);
+                });
+            },
+            async getApproval() {
+                const mnemonic = "announce room limb pattern dry unit scale effort smooth jazz weasel alcohol";
+                const wallet = ethers.Wallet.fromMnemonic(mnemonic, `m/44'/60'/0'/0/0`);
+                let address = wallet.address;
+                let data = {
+                    "owner": address,
+                    "operator": this.operator
+                };
+                axios.post('/api/relayer/getApproval', data).then(res => {
+                    console.log(res);
+                });
+            },
         }
     }
 </script>
@@ -107,6 +151,16 @@
     }
 
     .voteresult {
+        margin-top: 20px;
+        border: 1px solid black;
+        padding: 20px 20px;
+    }
+    .approval {
+        margin-top: 20px;
+        border: 1px solid black;
+        padding: 20px 20px;
+    }
+    .getApproval {
         margin-top: 20px;
         border: 1px solid black;
         padding: 20px 20px;
