@@ -31,6 +31,22 @@
             operator：<input v-model="operator"> <br/>
             <button @click="getApproval">获取挂单结果</button>
         </div>
+
+        <div class="transfer">
+            <p>transferNFT</p><br>
+            from：<input v-model="from_address"> <br/>
+            to：<input v-model="to_address"><br/>
+            id：<input v-model="transfer_id"><br/>
+            amount：<input v-model="transfer_amount"><br/>
+            <button @click="transferNFT">transferNFT</button>
+        </div>
+    </div>
+    <div class="transferUsdt">
+        <p>transferNFT</p><br>
+        from：<input v-model="from_usdt_address"> <br/>
+        to：<input v-model="to_usdt_address"><br/>
+        amount：<input v-model="usdt_amount"><br/>
+        <button @click="transferUsdt">transferUsdt</button>
     </div>
 </template>
 <script>
@@ -46,7 +62,14 @@
                 signer: "",
                 voteId: "",
                 id: "",
-                operator: ""
+                operator: "",
+                from_address: "",
+                to_address: "",
+                transfer_id: "",
+                transfer_amount: "",
+                from_usdt_address:"",
+                to_usdt_address:"",
+                usdt_amount:""
             }
         },
         methods: {
@@ -129,12 +152,34 @@
                     console.log(res);
                 });
             },
+            async transferNFT(){
+                let data = {
+                    "from": this.from_address,
+                    "to": this.to_address,
+                    "id": this.transfer_id,
+                    "amount": this.transfer_amount,
+                };
+                axios.post('/api/relayer/nftTransfer', data).then(res => {
+                    console.log(res);
+                });
+            },
+            async transferUsdt(){
+                let data = {
+                    "from": this.from_usdt_address,
+                    "to": this.to_usdt_address,
+                    "amount": this.usdt_amount,
+                };
+                axios.post('/api/relayer/usdtTransfer', data).then(res => {
+                    console.log(res);
+                });
+            }
         }
     }
 </script>
 
 <style scoped>
     .mint {
+        margin-top: 20px;
         border: 1px solid black;
         padding: 20px 20px;
     }
@@ -148,6 +193,8 @@
     .nft {
         border: 2px solid black;
         padding: 30px 30px;
+        display: flex;
+        flex-direction: row;
     }
 
     .voteresult {
@@ -161,6 +208,16 @@
         padding: 20px 20px;
     }
     .getApproval {
+        margin-top: 20px;
+        border: 1px solid black;
+        padding: 20px 20px;
+    }
+    .transfer{
+        margin-top: 20px;
+        border: 1px solid black;
+        padding: 20px 20px;
+    }
+    .transferUsdt{
         margin-top: 20px;
         border: 1px solid black;
         padding: 20px 20px;
